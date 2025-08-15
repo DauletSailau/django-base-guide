@@ -1,7 +1,42 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Заголовок{% endblock title %}
+{% block title %}{% if category %}{{ category.name }}{%else%}Все товары {% endif %} {% endblock title %}
 
 {% block content %}
-    контент страницы
-{% endblock content %}
+    <div class="d-felx justify-content-between align-items-center mb-4">
+        <h1>{%if category%}{{category.name }}{% else %} Все товары {%endif %}</h1>
+        <div class="dropdown"></div>
+        <button class="btn btn-outline-secondary dropdown-toggle">
+            Сортировка
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a href="?sort=name" class="dropdown-item">По названию (А-Я)</a></li>
+            <li><a href="?sort=-name" class="dropdown-item">По названию (Я-А)</a></li>
+            <li><a href="?sort=price" class="dropdown-item">По цене (дешевые)</a></li>
+            <li><a href="?sort=-price" class="dropdown-item">По цене (дорогие)</a></li>
+        </ul>
+    </div>
+
+    {%if not products %}
+    <div class="alert alert-info">Товары в этой категории отсутствуют</div>
+    {%else%}
+    <div class="row">
+        {%for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h4-100">
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                </a>
+                <div class="cart-body d-flex flex-column">
+                    <h5 class="card-title">
+                        <a href="{{ product.get_absolute_url }}" class="text-decoration-none">{{ product.name }}</a>
+                    </h5>
+                    <p class="card-text mt-auto">{{ product.price }} руб.</p>
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary mt-2">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+{%endif%}
+{% endblock %}
